@@ -1,12 +1,16 @@
 import { useState } from 'react';
+import { Link } from 'wouter';
+import { Product } from '@shared/schema';
+import { 
+  Card, 
+  CardContent, 
+  CardFooter 
+} from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Heart, ShoppingCart, Star } from 'lucide-react';
 import { useCart } from '@/hooks/use-cart';
 import { useWishlist } from '@/hooks/use-wishlist';
-import { Product } from '@shared/schema';
-import { Link } from 'wouter';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Heart, ShoppingCart, Star } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 
 interface ProductCardProps {
@@ -14,102 +18,125 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { id, name, price, imageUrl, category, rating, featured } = product;
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlistItem } = useWishlist();
   const { toast } = useToast();
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleAddToCart = () => {
+  // Handle add to cart
+  const handleAddToCart = (event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
     addToCart({
-      id,
-      name,
-      price: parseFloat(price),
-      imageUrl
+      id: product.id,
+      name: product.name,
+      price: parseFloat(product.price),
+      imageUrl: product.imageUrl,
+      quantity: 1
     });
     
     toast({
       title: "Produk ditambahkan ke keranjang",
-      description: `${name} telah ditambahkan ke keranjang belanja.`,
+      description: `${product.name} telah ditambahkan ke keranjang belanja.`,
     });
   };
 
-  const handleToggleWishlist = () => {
+  // Handle toggle wishlist
+  const handleToggleWishlist = (event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
     toggleWishlistItem({
-      id,
-      name,
-      price: parseFloat(price),
-      imageUrl
+      id: product.id,
+      name: product.name,
+      price: parseFloat(product.price),
+      imageUrl: product.imageUrl
     });
-
+    
     toast({
-      title: isInWishlist(id) ? "Produk dihapus dari favorit" : "Produk ditambahkan ke favorit",
-      description: isInWishlist(id) 
-        ? `${name} telah dihapus dari daftar favorit.` 
-        : `${name} telah ditambahkan ke daftar favorit.`,
+      title: isInWishlist(product.id) ? "Produk dihapus dari favorit" : "Produk ditambahkan ke favorit",
+      description: isInWishlist(product.id) 
+        ? `${product.name} telah dihapus dari daftar favorit.` 
+        : `${product.name} telah ditambahkan ke daftar favorit.`,
     });
   };
 
   return (
     <Card 
-      className="overflow-hidden transition-all duration-300 hover:shadow-lg"
+      className="overflow-hidden h-full transition-all duration-200 hover:shadow-md"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative">
-        {featured === "true" && (
-          <div className="absolute top-2 left-2 z-10">
-            <Badge variant="destructive">Featured</Badge>
-          </div>
-        )}
-        <Button
-          size="icon"
-          variant={isInWishlist(id) ? "destructive" : "outline"}
-          className="absolute top-2 right-2 z-10 opacity-90"
-          onClick={handleToggleWishlist}
-        >
-          <Heart className={isInWishlist(id) ? "fill-current" : ""} size={16} />
-        </Button>
-        <div className="h-48 overflow-hidden">
-          <Link href={`/product/${id}`}>
+      <Link href={`/product/${product.id}`}>
+        <a className="block h-full">
+          <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
+            {product.featured === "true" && (
+              <div className="absolute top-2 left-2 z-10">
+                <Badge variant="destructive">Featured</Badge>
+              </div>
+            )}
+            
             <img 
-              src={imageUrl} 
-              alt={name} 
-              className="w-full h-full object-cover transition-transform duration-300 transform-gpu hover:scale-105 cursor-pointer" 
+              src={product.imageUrl} 
+              alt={product.name} 
+              className={`h-full w-full object-cover transition-transform duration-500 ${isHovered ? 'scale-110' : 'scale-100'}`}
             />
-          </Link>
-        </div>
-      </div>
-      <CardHeader className="p-4 pb-0">
-        <div className="flex justify-between items-start">
-          <div>
-            <span className="text-sm text-gray-500">{category}</span>
-            <CardTitle className="text-lg mt-1 line-clamp-1">
-              <Link href={`/product/${id}`} className="hover:underline">
-                {name}
-              </Link>
-            </CardTitle>
+            
+            <div className={`absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 transition-opacity duration-300 ${isHovered ? 'opacity-100' : ''}`}>
+              <Button 
+                className="m-2"
+                onClick={handleAddToCart}
+              >
+                Lihat Detail
+              </Button>
+            </div>
           </div>
-        </div>
-      </CardHeader>
-      <CardContent className="p-4 pb-0">
-        <div className="flex items-center space-x-1 mb-2">
-          <Star className="h-4 w-4 fill-current text-yellow-400" />
-          <span className="text-sm">{rating}</span>
-        </div>
-        <div className="text-xl font-bold text-primary">
-          Rp {parseFloat(price).toLocaleString('id-ID')}
-        </div>
-      </CardContent>
-      <CardFooter className="p-4">
-        <Button 
-          className="w-full"
-          onClick={handleAddToCart}
-        >
-          <ShoppingCart className="mr-2 h-4 w-4" />
-          Tambahkan ke Keranjang
-        </Button>
-      </CardFooter>
+          
+          <CardContent className="p-4">
+            <div className="flex justify-between mb-2">
+              <Badge variant="outline">{product.category}</Badge>
+              <div className="flex items-center text-yellow-500">
+                <Star className="h-4 w-4 fill-current" />
+                <span className="text-xs ml-1">{product.rating}</span>
+              </div>
+            </div>
+            
+            <h3 className="font-medium text-lg mb-1 line-clamp-1">{product.name}</h3>
+            
+            <p className="text-gray-500 text-sm mb-2 line-clamp-2">
+              {product.description}
+            </p>
+            
+            <div className="text-primary font-bold mt-2">
+              Rp {parseFloat(product.price).toLocaleString('id-ID')}
+            </div>
+          </CardContent>
+          
+          <CardFooter className="p-4 pt-0 mt-auto">
+            <div className="flex space-x-2 w-full">
+              <Button 
+                variant="outline" 
+                size="icon"
+                className={`rounded-full ${isInWishlist(product.id) ? 'text-red-500 border-red-200' : ''}`}
+                onClick={handleToggleWishlist}
+              >
+                <Heart 
+                  className={`h-5 w-5 ${isInWishlist(product.id) ? 'fill-current' : ''}`} 
+                />
+              </Button>
+              
+              <Button 
+                className="flex-1"
+                onClick={handleAddToCart}
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Tambahkan
+              </Button>
+            </div>
+          </CardFooter>
+        </a>
+      </Link>
     </Card>
   );
 }
