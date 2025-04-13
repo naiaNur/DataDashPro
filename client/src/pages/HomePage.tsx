@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Product } from '@shared/schema';
 import { Link } from 'wouter';
-import type { EmblaCarouselType } from 'embla-carousel-react';
+import type { UseEmblaCarouselType } from 'embla-carousel-react';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/carousel';
 
 export default function HomePage() {
-  const [api, setApi] = React.useState<EmblaCarouselType | null>(null);
+  const [api, setApi] = React.useState<any>(null);
   
   // Autoplay functionality
   React.useEffect(() => {
