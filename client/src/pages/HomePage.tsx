@@ -117,7 +117,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <img 
-                  src="https://placehold.co/1200x400?text=Electronic+Devices" 
+                  src="https://cdn1.productnation.co/stg/sites/5/5de487405d21b.jpeg" 
                   alt="Electronic Devices" 
                   className="w-full h-full object-cover"
                 />
@@ -139,7 +139,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <img 
-                  src="https://placehold.co/1200x400?text=Fashion+Collection" 
+                  src="https://highlight.id/wp-content/uploads/2018/07/merek-fashion-branded-lokal-indonesia-produk-koleksi-pakaian-baju-cewek-terbaru-keren-ngehits_03.jpg" 
                   alt="Fashion Collection" 
                   className="w-full h-full object-cover"
                 />
@@ -161,7 +161,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <img 
-                  src="https://placehold.co/1200x400?text=Home+Appliances" 
+                  src="https://d2xjmi1k71iy2m.cloudfront.net/dairyfarm/id/pageImages/desain-perabotan-untuk-rumah.jpeg" 
                   alt="Home Appliances" 
                   className="w-full h-full object-cover"
                 />
