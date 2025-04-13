@@ -2,34 +2,27 @@ import { useState, useEffect } from 'react';
 import { CartItem } from '@shared/schema';
 
 export function useCart() {
-  const [cart, setCart] = useState<CartItem[]>([]);
-  
-  // Load cart from localStorage on initial render
-  useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      try {
-        setCart(JSON.parse(savedCart));
-      } catch (error) {
-        console.error('Failed to parse cart from localStorage:', error);
-        localStorage.removeItem('cart');
-      }
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    // Initialize from localStorage if available
+    if (typeof window !== 'undefined') {
+      const savedCart = localStorage.getItem('cart');
+      return savedCart ? JSON.parse(savedCart) : [];
     }
-  }, []);
+    return [];
+  });
 
-  // Save cart to localStorage whenever it changes
+  // Save to localStorage whenever cart changes
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cart));
   }, [cart]);
 
   // Add item to cart
-  const addToCart = (item: Omit<CartItem, 'quantity'>) => {
+  const addToCart = (item: Omit<CartItem, "quantity">) => {
     setCart(prevCart => {
-      // Check if item already exists in cart
       const existingItemIndex = prevCart.findIndex(cartItem => cartItem.id === item.id);
       
-      if (existingItemIndex !== -1) {
-        // Item exists, increase quantity
+      if (existingItemIndex >= 0) {
+        // Item already exists, increment quantity
         const updatedCart = [...prevCart];
         updatedCart[existingItemIndex] = {
           ...updatedCart[existingItemIndex],
@@ -37,7 +30,7 @@ export function useCart() {
         };
         return updatedCart;
       } else {
-        // Item doesn't exist, add it with quantity 1
+        // Add new item with quantity 1
         return [...prevCart, { ...item, quantity: 1 }];
       }
     });
@@ -50,30 +43,30 @@ export function useCart() {
 
   // Update item quantity
   const updateQuantity = (id: number, quantity: number) => {
-    if (quantity <= 0) {
-      removeFromCart(id);
-      return;
-    }
-    
-    setCart(prevCart => 
-      prevCart.map(item => 
+    setCart(prevCart => {
+      if (quantity <= 0) {
+        return prevCart.filter(item => item.id !== id);
+      }
+      
+      return prevCart.map(item => 
         item.id === id ? { ...item, quantity } : item
-      )
-    );
+      );
+    });
   };
 
-  // Clear cart
+  // Clear entire cart
   const clearCart = () => {
     setCart([]);
-    localStorage.removeItem('cart');
   };
 
   // Calculate total price
   const getTotalPrice = () => {
-    return cart.reduce((total, item) => total + (parseFloat(item.price.toString()) * item.quantity), 0);
+    return cart.reduce((total, item) => {
+      return total + (parseFloat(item.price.toString()) * item.quantity);
+    }, 0);
   };
 
-  // Get cart item count
+  // Get total item count
   const getItemCount = () => {
     return cart.reduce((count, item) => count + item.quantity, 0);
   };
