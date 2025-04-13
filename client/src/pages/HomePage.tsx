@@ -1,13 +1,37 @@
+import * as React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Product } from '@shared/schema';
 import { Link } from 'wouter';
+import type { EmblaCarouselType } from 'embla-carousel-react';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AlertCircle, ArrowRight } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { 
+  Carousel, 
+  CarouselContent, 
+  CarouselItem, 
+  CarouselPrevious, 
+  CarouselNext 
+} from '@/components/ui/carousel';
 
 export default function HomePage() {
+  const [api, setApi] = React.useState<EmblaCarouselType | null>(null);
+  
+  // Autoplay functionality
+  React.useEffect(() => {
+    if (!api) return;
+    
+    const interval = setInterval(() => {
+      if (api?.scrollNext) {
+        api.scrollNext();
+      }
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, [api]);
+
   const { data: featuredProducts, isLoading: isFeaturedLoading, error: featuredError } = useQuery<Product[]>({
     queryKey: ['/api/products/featured'],
   });
@@ -74,18 +98,81 @@ export default function HomePage() {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary/20 to-primary/5 rounded-lg p-8 mb-16">
-        <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-4xl font-bold mb-4">Temukan Produk Terbaik</h1>
-          <p className="text-xl text-gray-700 mb-8">
-            Berbagai produk pilihan dengan kualitas terbaik dan harga terjangkau
-          </p>
-          <Button size="lg" asChild>
-            <Link href="/products">
-              Belanja Sekarang
-            </Link>
-          </Button>
-        </div>
+      <div className="rounded-lg mb-16 overflow-hidden">
+        <Carousel className="w-full" opts={{ loop: true, duration: 20 }} setApi={setApi}>
+          <CarouselContent>
+            <CarouselItem>
+              <div className="h-[400px] w-full relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/50 to-transparent z-10 flex items-center">
+                  <div className="text-white ml-8 md:ml-16 max-w-lg">
+                    <h1 className="text-4xl font-bold mb-4">Temukan Produk Terbaik</h1>
+                    <p className="text-xl mb-8">
+                      Berbagai produk pilihan dengan kualitas terbaik dan harga terjangkau
+                    </p>
+                    <Button size="lg" variant="secondary" asChild>
+                      <Link href="/products">
+                        Belanja Sekarang
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+                <img 
+                  src="https://placehold.co/1200x400?text=Electronic+Devices" 
+                  alt="Electronic Devices" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </CarouselItem>
+            <CarouselItem>
+              <div className="h-[400px] w-full relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/50 to-transparent z-10 flex items-center">
+                  <div className="text-white ml-8 md:ml-16 max-w-lg">
+                    <h1 className="text-4xl font-bold mb-4">Koleksi Pakaian Terbaru</h1>
+                    <p className="text-xl mb-8">
+                      Tampil stylish dengan pilihan pakaian terbaru dari brand ternama
+                    </p>
+                    <Button size="lg" variant="secondary" asChild>
+                      <Link href="/category/Clothing">
+                        Lihat Koleksi
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+                <img 
+                  src="https://placehold.co/1200x400?text=Fashion+Collection" 
+                  alt="Fashion Collection" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </CarouselItem>
+            <CarouselItem>
+              <div className="h-[400px] w-full relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/50 to-transparent z-10 flex items-center">
+                  <div className="text-white ml-8 md:ml-16 max-w-lg">
+                    <h1 className="text-4xl font-bold mb-4">Perlengkapan Rumah</h1>
+                    <p className="text-xl mb-8">
+                      Lengkapi kebutuhan rumah Anda dengan produk berkualitas
+                    </p>
+                    <Button size="lg" variant="secondary" asChild>
+                      <Link href="/category/Home & Kitchen">
+                        Jelajahi Sekarang
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+                <img 
+                  src="https://placehold.co/1200x400?text=Home+Appliances" 
+                  alt="Home Appliances" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </CarouselItem>
+          </CarouselContent>
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-20">
+            <CarouselPrevious className="relative -translate-y-0 -left-0 mx-2" />
+            <CarouselNext className="relative -translate-y-0 -right-0 mx-2" />
+          </div>
+        </Carousel>
       </div>
 
       {/* Featured Products Section */}
