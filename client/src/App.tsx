@@ -23,7 +23,7 @@ function Router() {
           <Route path="/product/:id" component={ProductDetailPage} />
           <Route path="/cart" component={CartPage} />
           <Route path="/wishlist" component={WishlistPage} />
-          <Route path="/categories" component={CategoryPage} />
+          <Route path="/category/:category" component={CategoryPage} />
           <Route component={NotFound} />
         </Switch>
       </main>

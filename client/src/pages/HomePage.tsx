@@ -123,7 +123,7 @@ export default function HomePage() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {categories.map(([category, count]) => (
-              <Link key={category} href={`/products?category=${category}`}>
+              <Link key={category} href={`/category/${category}`}>
                 <div className="bg-primary/10 hover:bg-primary/20 transition-colors rounded-lg p-6 text-center cursor-pointer h-full flex flex-col justify-center items-center">
                   <h3 className="font-bold mb-2">{category}</h3>
                   <p className="text-sm text-gray-600">{count} produk</p>

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useLocation } from 'wouter';
+import { useRoute, Link } from 'wouter';
 import { Product } from '@shared/schema';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { SearchBar } from '@/components/product/SearchBar';
@@ -7,12 +7,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { AlertCircle, ArrowLeft } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Link } from 'wouter';
 
 export default function CategoryPage() {
-  const [location] = useLocation();
-  const searchParams = new URLSearchParams(location.split('?')[1]);
-  const category = searchParams.get('category');
+  const [, params] = useRoute<{ category: string }>('/category/:category');
+  const category = params?.category;
 
   const { data: products, isLoading, error } = useQuery<Product[]>({
     queryKey: [`/api/products/category/${category}`],
