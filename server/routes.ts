@@ -51,17 +51,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // API endpoint to get a specific product
-  app.get("/api/products/:id", async (req, res) => {
+  // API endpoint to get featured products
+  app.get("/api/products/featured", async (_req, res) => {
     try {
-      const id = parseInt(req.params.id);
-      const product = await storage.getProduct(id);
-      
-      if (!product) {
-        return res.status(404).json({ success: false, error: "Product not found" });
-      }
-      
-      res.status(200).json(product);
+      const products = await storage.getFeaturedProducts();
+      res.status(200).json(products);
     } catch (error) {
       res.status(500).json({ success: false, error: String(error) });
     }
@@ -78,22 +72,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // API endpoint to get featured products
-  app.get("/api/products/featured", async (_req, res) => {
-    try {
-      const products = await storage.getFeaturedProducts();
-      res.status(200).json(products);
-    } catch (error) {
-      res.status(500).json({ success: false, error: String(error) });
-    }
-  });
-
   // API endpoint to search products
   app.get("/api/products/search/:query", async (req, res) => {
     try {
       const query = req.params.query;
       const products = await storage.searchProducts(query);
       res.status(200).json(products);
+    } catch (error) {
+      res.status(500).json({ success: false, error: String(error) });
+    }
+  });
+
+  // API endpoint to get a specific product
+  app.get("/api/products/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const product = await storage.getProduct(id);
+      
+      if (!product) {
+        return res.status(404).json({ success: false, error: "Product not found" });
+      }
+      
+      res.status(200).json(product);
     } catch (error) {
       res.status(500).json({ success: false, error: String(error) });
     }

@@ -2,22 +2,16 @@ import { useState, useEffect } from 'react';
 import { WishlistItem } from '@shared/schema';
 
 export function useWishlist() {
-  const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
-  
-  // Load wishlist from localStorage on initial render
-  useEffect(() => {
-    const savedWishlist = localStorage.getItem('wishlist');
-    if (savedWishlist) {
-      try {
-        setWishlist(JSON.parse(savedWishlist));
-      } catch (error) {
-        console.error('Failed to parse wishlist from localStorage:', error);
-        localStorage.removeItem('wishlist');
-      }
+  const [wishlist, setWishlist] = useState<WishlistItem[]>(() => {
+    // Initialize from localStorage if available
+    if (typeof window !== 'undefined') {
+      const savedWishlist = localStorage.getItem('wishlist');
+      return savedWishlist ? JSON.parse(savedWishlist) : [];
     }
-  }, []);
+    return [];
+  });
 
-  // Save wishlist to localStorage whenever it changes
+  // Save to localStorage whenever wishlist changes
   useEffect(() => {
     localStorage.setItem('wishlist', JSON.stringify(wishlist));
   }, [wishlist]);
@@ -25,16 +19,13 @@ export function useWishlist() {
   // Add item to wishlist
   const addToWishlist = (item: WishlistItem) => {
     setWishlist(prevWishlist => {
-      // Check if item already exists in wishlist
-      const existingItemIndex = prevWishlist.findIndex(wishlistItem => wishlistItem.id === item.id);
+      const exists = prevWishlist.some(wishlistItem => wishlistItem.id === item.id);
       
-      if (existingItemIndex !== -1) {
-        // Item already exists, do nothing
-        return prevWishlist;
-      } else {
-        // Item doesn't exist, add it
+      if (!exists) {
         return [...prevWishlist, item];
       }
+      
+      return prevWishlist;
     });
   };
 
@@ -43,32 +34,35 @@ export function useWishlist() {
     setWishlist(prevWishlist => prevWishlist.filter(item => item.id !== id));
   };
 
-  // Check if an item is in the wishlist
+  // Toggle item in wishlist (add if not present, remove if present)
+  const toggleWishlistItem = (item: WishlistItem) => {
+    setWishlist(prevWishlist => {
+      const exists = prevWishlist.some(wishlistItem => wishlistItem.id === item.id);
+      
+      if (exists) {
+        return prevWishlist.filter(wishlistItem => wishlistItem.id !== item.id);
+      } else {
+        return [...prevWishlist, item];
+      }
+    });
+  };
+
+  // Check if item is in wishlist
   const isInWishlist = (id: number) => {
     return wishlist.some(item => item.id === id);
   };
 
-  // Toggle item in wishlist (add if not present, remove if present)
-  const toggleWishlistItem = (item: WishlistItem) => {
-    if (isInWishlist(item.id)) {
-      removeFromWishlist(item.id);
-    } else {
-      addToWishlist(item);
-    }
-  };
-
-  // Clear wishlist
+  // Clear entire wishlist
   const clearWishlist = () => {
     setWishlist([]);
-    localStorage.removeItem('wishlist');
   };
 
   return {
     wishlist,
     addToWishlist,
     removeFromWishlist,
-    isInWishlist,
     toggleWishlistItem,
+    isInWishlist,
     clearWishlist
   };
 }

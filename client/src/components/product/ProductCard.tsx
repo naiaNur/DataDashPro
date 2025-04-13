@@ -32,8 +32,7 @@ export function ProductCard({ product }: ProductCardProps) {
       id: product.id,
       name: product.name,
       price: parseFloat(product.price),
-      imageUrl: product.imageUrl,
-      quantity: 1
+      imageUrl: product.imageUrl
     });
     
     toast({
