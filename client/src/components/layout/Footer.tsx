@@ -29,11 +29,11 @@ export default function Footer() {
           <div>
             <h3 className="text-sm font-semibold text-gray-200 tracking-wider uppercase">Kategori</h3>
             <ul className="mt-4 space-y-2">
-              <li><Link href="/products?category=Electronics"><a className="text-base text-gray-400 hover:text-white">Elektronik</a></Link></li>
-              <li><Link href="/products?category=Clothing"><a className="text-base text-gray-400 hover:text-white">Pakaian</a></Link></li>
-              <li><Link href="/products?category=Home & Kitchen"><a className="text-base text-gray-400 hover:text-white">Rumah & Dapur</a></Link></li>
-              <li><Link href="/products?category=Beauty"><a className="text-base text-gray-400 hover:text-white">Kecantikan</a></Link></li>
-              <li><Link href="/products?category=Sports"><a className="text-base text-gray-400 hover:text-white">Olahraga</a></Link></li>
+              <li><Link href="/category/Electronics"><a className="text-base text-gray-400 hover:text-white">Elektronik</a></Link></li>
+              <li><Link href="/category/Clothing"><a className="text-base text-gray-400 hover:text-white">Pakaian</a></Link></li>
+              <li><Link href="/category/Home & Kitchen"><a className="text-base text-gray-400 hover:text-white">Rumah & Dapur</a></Link></li>
+              <li><Link href="/category/Beauty"><a className="text-base text-gray-400 hover:text-white">Kecantikan</a></Link></li>
+              <li><Link href="/category/Sports"><a className="text-base text-gray-400 hover:text-white">Olahraga</a></Link></li>
             </ul>
           </div>
           <div>
@@ -42,7 +42,7 @@ export default function Footer() {
               <li><Link href="/cart"><a className="text-base text-gray-400 hover:text-white">Keranjang</a></Link></li>
               <li><Link href="/wishlist"><a className="text-base text-gray-400 hover:text-white">Wishlist</a></Link></li>
               <li><Link href="/products"><a className="text-base text-gray-400 hover:text-white">Produk</a></Link></li>
-              <li><Link href="/categories"><a className="text-base text-gray-400 hover:text-white">Kategori</a></Link></li>
+              <li><Link href="/products"><a className="text-base text-gray-400 hover:text-white">Kategori</a></Link></li>
             </ul>
           </div>
           <div>
